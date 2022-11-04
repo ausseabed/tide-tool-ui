@@ -1,6 +1,9 @@
 # Tide Tool UI
 
-Web based UI for the creation of CARIS zone definition files (ZDF)
+Web based UI for the creation of CARIS zone definition files (ZDF).
+
+The Tide Tool is available at the following link.
+    [https://ausseabed.github.io/tide-tool-ui/](https://ausseabed.github.io/tide-tool-ui/)
 
 ## Recommended IDE Setup
 
@@ -26,4 +29,10 @@ npm run dev
 
 ```sh
 npm run build
+```
+
+### manually deploy to GitHub pages
+
+```sh
+npm run deploy
 ```
