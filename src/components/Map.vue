@@ -53,6 +53,7 @@ onMounted(() => {
       color: 'red',
     }
   });
+  map.value.pm.disableDraw();
 
 
   // map.value.pm.enableDraw('Marker', {
