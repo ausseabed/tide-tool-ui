@@ -1,47 +1,41 @@
 <script setup>
-import HelloWorld from './components/HelloWorld.vue'
-import TheWelcome from './components/TheWelcome.vue'
+import Map from './components/Map.vue'
+
 </script>
 
 <template>
-  <header>
-    <img alt="Vue logo" class="logo" src="./assets/logo.svg" width="125" height="125" />
+  <a-row type="flex" :gutter="[0,0]">
+    <a-col flex="400px">
+      <a-row>
+        <img src="/banner.svg" style="width: 100%; height: 100%;">
+      </a-row>
+      <img src="/Logo.png" style="background-color: red;">
 
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-    </div>
-  </header>
+      <a-row class="title-box">
+        <a-col>
+          <a-typography-title class="title-text">Tide Tool UI</a-typography-title>
+          <a-typography-text type="secondary">Create zone definition files (zdf) used to define tide zones and stations for the Teledyne CARIS marine mapping software.</a-typography-text>
+        </a-col>
+      </a-row>
+      
+    </a-col>
+    <a-col flex="auto">
+      <div style="width: 100%; height: 100%;">
+        <Map ></Map>
+      </div>
+    </a-col>
+  </a-row>
 
-  <main>
-    <TheWelcome />
-  </main>
+
+
 </template>
 
 <style scoped>
-header {
-  line-height: 1.5;
+.title-box {
+  margin: 0px 16px 0px 16px;
 }
 
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
-}
-
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
-
-  .logo {
-    margin: 0 2rem 0 0;
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
+.title-text {
+  margin-bottom: -4px;
 }
 </style>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="591px" height="18px" viewBox="0 0 591 18" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 62 (91390) - https://sketch.com -->
+    <title>Group</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <linearGradient x1="100%" y1="50%" x2="0%" y2="50%" id="linearGradient-1">
+            <stop stop-color="#0D6A90" offset="0%"></stop>
+            <stop stop-color="#042235" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Group">
+            <rect id="Rectangle" fill="#00AACD" x="0" y="0" width="591" height="18"></rect>
+            <polygon id="Rectangle" fill="url(#linearGradient-1)" points="480 0 591 0 591 18 499.534912 18"></polygon>
+        </g>
+    </g>
+</svg>
