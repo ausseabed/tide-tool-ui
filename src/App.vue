@@ -4,13 +4,13 @@ import Map from './components/Map.vue'
 import { message } from 'ant-design-vue';
 import { UploadOutlined } from '@ant-design/icons-vue';
 import { onMounted, ref } from 'vue';
+import { Zdf } from './zdf'
 
 const fileList = ref([]);
 const tideMap = ref();
 
 onMounted(() => {
-  console.log(tideMap.value);
-  tideMap.value?.foo();
+
 });
 
 const handleChange = info => {
@@ -39,6 +39,20 @@ const uploadFiles = ( {onSuccess, onError, file} ) => {
     .catch(() => {
       console.log('error');
     });
+};
+
+const downloadZdf = () => {
+
+  let zdf = new Zdf()
+
+  let tideZones = tideMap.value?.getTideZones()
+  zdf.setZonesWithGeojson(tideZones)
+
+  let tideStations = tideMap.value?.getTideStations()
+  zdf.setStationsWithGeojson(tideStations)
+
+  let al = zdf.allLines()
+  console.log(al)
 };
 
 
@@ -77,6 +91,16 @@ const uploadFiles = ( {onSuccess, onError, file} ) => {
           </a-upload>
         </div>
       </a-row>
+
+      <a-row class="title-box">
+        <div>
+          <a-divider orientation="left">Zone Definition File</a-divider>
+          <p>
+            Create tide zones and tide stations using the map drawing tools. Once complete click the button below to download a zone definition file (*.zdf).
+          </p>
+          <a-button block @click="downloadZdf">Download ZDF</a-button>
+        </div>
+      </a-row>
       
     </a-col>
     <a-col flex="auto">
@@ -94,5 +118,16 @@ const uploadFiles = ( {onSuccess, onError, file} ) => {
 
 .title-text {
   margin-bottom: -4px;
+}
+
+</style>
+
+<style>
+div.ant-upload {
+  width: 100%;
+}
+
+div.ant-upload > span > button {
+  width: 100%;
 }
 </style>

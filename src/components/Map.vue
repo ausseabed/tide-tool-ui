@@ -1,10 +1,4 @@
 <script setup>
-// defineProps({
-//   msg: {
-//     type: String,
-//     required: true
-//   }
-// })
 
 import  L  from "leaflet";
 import '@geoman-io/leaflet-geoman-free';
@@ -68,16 +62,8 @@ onUnmounted(() => {
   map.value?.remove();
 })
 
-const foo = () => {
-  console.log('foo method accessed');
-}
-
-const setTracklinesData = (data) => {
-  console.log(data);
-}
 
 const setTracklinesFile = async (info) => {
-
   try {
     let content = await readFileAsync(info)
     let trackline = tracklinesToCoords(content)
@@ -100,10 +86,37 @@ const setTracklinesFile = async (info) => {
   } catch (err) {
     console.log(err)
   }
-
 }
 
-defineExpose({ foo, setTracklinesData, setTracklinesFile })
+
+const getTideZones = () => {
+  var fg = L.featureGroup();
+  map.value?.eachLayer((layer) => {
+    if (layer instanceof L.Path && layer.pm) {
+      fg.addLayer(layer);
+    }
+  });
+  // console.log(fg.toGeoJSON());
+  return fg.toGeoJSON()
+}
+
+const getTideStations = () => {
+  var fg = L.featureGroup();
+  map.value?.eachLayer((layer) => {
+    if (layer instanceof L.Marker && layer.pm) {
+      fg.addLayer(layer);
+    }
+  });
+  // console.log(fg.toGeoJSON());
+  return fg.toGeoJSON()
+}
+
+
+defineExpose({
+  setTracklinesFile,
+  getTideZones,
+  getTideStations 
+})
 </script>
 
 <template>
