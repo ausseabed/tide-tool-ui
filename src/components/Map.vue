@@ -12,14 +12,17 @@ import '@geoman-io/leaflet-geoman-free/dist/leaflet-geoman.css';
 
 import { shallowRef, onMounted, onUnmounted, markRaw, ref } from 'vue'
 
+import { readFileAsync, tracklinesToCoords, simplifyCoords } from "../util";
+
+L.PM.setOptIn(true);
+
 const mapContainer = ref(null)
 const map = ref(null)
 
 const center = ref([-27.3313328, 133.0994293])
 
-
 onMounted(() => {
-  map.value = L.map("map").setView(center.value, 4);
+  map.value = L.map("map", { pmIgnore: false }).setView(center.value, 4);
 
   L.tileLayer(
     "https://services.ga.gov.au/gis/rest/services/NationalBaseMap/MapServer/tile/{z}/{y}/{x}",
@@ -40,6 +43,11 @@ onMounted(() => {
     dragMode: false
   })
 
+  map.value.on('pm:create', (e) => {
+    e.layer.options.pmIgnore = false
+    L.PM.reInitLayer(e.layer)
+  })
+
   map.value.pm.setPathOptions(
     { color: 'red'}
   )
@@ -53,40 +61,49 @@ onMounted(() => {
       color: 'red',
     }
   });
-  map.value.pm.disableDraw();
-
-
-  // map.value.pm.enableDraw('Marker', {
-  //   markerStyle: {
-  //     color: 'red'
-  //   }
-  // });
-
-  // map.value.pm.setPathOptions(
-    
-  // );
-
-  // const initialState = { lng: 144.9631, lat: -37.8136, zoom: 10 }
-
-  // map.value = markRaw(new Map({
-  //   container: mapContainer.value,
-  //   style: `https://api.maptiler.com/maps/streets/style.json?key=${apiKey}`,
-  //   center: [initialState.lng, initialState.lat],
-  //   zoom: initialState.zoom
-  // }))
-
-  // map.value.on('move', function () {
-  //   centerLocation.value[0] = map.value.transform.center["lat"]
-  //   centerLocation.value[1] = map.value.transform.center["lng"]
-  // })
-
+  map.value.pm.disableDraw()
 })
 
 onUnmounted(() => {
   map.value?.remove();
 })
 
+const foo = () => {
+  console.log('foo method accessed');
+}
 
+const setTracklinesData = (data) => {
+  console.log(data);
+}
+
+const setTracklinesFile = async (info) => {
+
+  try {
+    let content = await readFileAsync(info)
+    let trackline = tracklinesToCoords(content)
+    let simpleTrackline = simplifyCoords(trackline)
+
+    // console.log(trackline)
+    // console.log(simpleTrackline)
+    let coords = simpleTrackline.map((coord) => {
+      return [coord.x, coord.y]
+    })
+
+    let polylineOptions = {
+      color: 'yellow',
+      interactive: false,
+      pmIgnore: true
+    }
+    let polyline = L.polyline(coords, polylineOptions).addTo(map.value)
+    map.value.fitBounds(polyline.getBounds())
+    
+  } catch (err) {
+    console.log(err)
+  }
+
+}
+
+defineExpose({ foo, setTracklinesData, setTracklinesFile })
 </script>
 
 <template>
