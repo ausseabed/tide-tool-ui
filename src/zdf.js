@@ -14,7 +14,7 @@ class ZdfBlock {
 }
 
 
-class ZdfBlockHeader extends ZdfBlock{
+class ZdfBlockHeader extends ZdfBlock {
 
   constructor() {
     super('ZONE_DEF_VERSION_3')
@@ -22,6 +22,28 @@ class ZdfBlockHeader extends ZdfBlock{
 
   toStrings() {
     return [`[${this.type}]`]
+  }
+}
+
+/**
+ * [OPTIONS]
+ * Outage, 600
+ * Interval, 10
+ */
+class ZdfBlockOptions extends ZdfBlock {
+
+  constructor() {
+    super('OPTIONS')
+    this.outage = 600
+    this.interval = 10
+  }
+
+  toStrings() {
+    return [
+      `[${this.type}]`,
+      `Outage, ${this.outage}`,
+      `Interval, ${this.interval}`
+    ]
   }
 }
 
@@ -126,8 +148,10 @@ class Zdf {
     this.headers = []
     this.zones = []
     this.stations = []
+    this.footers = []
     
     this.headers.push(new ZdfBlockHeader())
+    this.footers.push(new ZdfBlockOptions())
   }
 
   setZonesWithGeojson(geojsonZones) {
@@ -150,7 +174,8 @@ class Zdf {
     let ab = [
       ...this.headers,
       ...this.zones,
-      ...this.stations
+      ...this.stations,
+      ...this.footers
     ]
     return ab
   }
