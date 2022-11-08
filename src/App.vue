@@ -2,6 +2,7 @@
 import Map from './components/Map.vue'
 
 import { message } from 'ant-design-vue';
+import 'ant-design-vue/es/message/style/css';
 import { UploadOutlined } from '@ant-design/icons-vue';
 import { onMounted, ref } from 'vue';
 import { downloadToFile } from './util'
