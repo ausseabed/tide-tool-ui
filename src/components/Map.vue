@@ -1,6 +1,11 @@
 <script setup>
 
 import  L  from "leaflet";
+
+import icon from 'leaflet/dist/images/marker-icon.png';
+import icon2x from 'leaflet/dist/images/marker-icon-2x.png';
+import iconShadow from 'leaflet/dist/images/marker-shadow.png';
+
 import '@geoman-io/leaflet-geoman-free';
 import '@geoman-io/leaflet-geoman-free/dist/leaflet-geoman.css';  
 
@@ -16,6 +21,20 @@ const map = ref(null)
 const center = ref([-27.3313328, 133.0994293])
 
 onMounted(() => {
+
+  let DefaultIcon = L.icon({
+    iconUrl: icon,
+    iconRetinaUrl: icon2x,
+    shadowUrl: iconShadow,
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+    shadowSize: [41, 41]
+  });
+
+  L.Marker.prototype.options.icon = DefaultIcon;
+
+
   map.value = L.map("map", { pmIgnore: false }).setView(center.value, 4);
 
   L.tileLayer(
@@ -53,6 +72,13 @@ onMounted(() => {
     },
     templineStyle: {
       color: 'red',
+    }
+  });
+  map.value.pm.disableDraw()
+
+  map.value.pm.enableDraw('Marker', {
+    markerStyle: {
+      icon: DefaultIcon
     }
   });
   map.value.pm.disableDraw()
