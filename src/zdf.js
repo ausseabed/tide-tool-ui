@@ -194,6 +194,52 @@ class ZdfBlockTideZone extends ZdfBlock {
 }
 
 
+/**
+ * Stores the details of the individual tide stations listed in a TIDE_ZONE
+ * block
+ * eg;
+ * box01,tide01,tide05,tide03,tide04
+ */
+class TideAverageDetails {
+  constructor(zone, stationDetailsList) {
+    this.zone = zone
+    this.stationDetailsList = stationDetailsList
+  }
+
+  toString() {
+    let stationNames = this.stationDetailsList.map((sd) => {
+      return sd.name
+    })
+    .join(',')
+    return `${this.zone.name},${stationNames}`
+  }
+}
+
+
+class ZdfBlockTideAverage extends ZdfBlock {
+
+  constructor() {
+    super('TIDE_AVERAGE')
+    this.tideAverageDetails = []
+  }
+
+  addTideAverageDetails(tzd) {
+    this.tideAverageDetails.push(tzd)
+  }
+
+  toStrings() {
+    let tideAveragesStr = this.tideAverageDetails.map((tad) => {
+      return tad.toString()
+    })
+    return [
+      `[${this.type}]`,
+      ...tideAveragesStr
+    ]
+  }
+
+}
+
+
 
 class Zdf {
   constructor() {
@@ -201,8 +247,9 @@ class Zdf {
     this.zones = []
     this.tideZones = []
     this.stations = []
+    this.tideAverages = []
     this.footers = []
-    
+
     this.headers.push(new ZdfBlockHeader())
     this.footers.push(new ZdfBlockOptions())
   }
@@ -245,12 +292,35 @@ class Zdf {
     this.tideZones.push(tideZone)
   }
 
+  buildTideAverages() {
+    let tideAverage = new ZdfBlockTideAverage()
+
+    for (const zone of this.zones) {
+      let zonePolygon = polygon([zone.coords])
+      let stationDetailsList = []
+      for (const station of this.stations) {
+        for (const stationDetails of station.stationDetails) {
+          let stationPoint = point([stationDetails.longitude, stationDetails.latitude])
+          if (booleanPointInPolygon(stationPoint, zonePolygon)) {
+            stationDetailsList.push(stationDetails)
+          }
+        }
+      }
+
+      let tideAverageDetails = new TideAverageDetails(zone, stationDetailsList)
+      tideAverage.addTideAverageDetails(tideAverageDetails)
+    }
+
+    this.tideAverages.push(tideAverage)
+  }
+
   allBlocks() {
     let ab = [
       ...this.headers,
       ...this.zones,
       ...this.tideZones,
       ...this.stations,
+      ...this.tideAverages,
       ...this.footers
     ]
     return ab
