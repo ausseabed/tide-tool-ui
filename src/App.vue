@@ -4,6 +4,7 @@ import Map from './components/Map.vue'
 import { message } from 'ant-design-vue';
 import { UploadOutlined } from '@ant-design/icons-vue';
 import { onMounted, ref } from 'vue';
+import { downloadToFile } from './util'
 import { Zdf } from './zdf'
 
 const fileList = ref([]);
@@ -55,7 +56,9 @@ const downloadZdf = () => {
   zdf.buildTideAverages()
 
   let al = zdf.allLines()
-  console.log(al)
+
+  let content = al.join('\n')
+  downloadToFile(content, 'tide_zones_definition.zdf', 'text/plain')
 };
 
 

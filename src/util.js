@@ -22,6 +22,25 @@ function readFileAsync(info) {
   })
 }
 
+
+/**
+ * Download a file using only JS
+ * @param {*} content content to include in the downloaded file
+ * @param {*} filename name of the file that will be downloaded
+ * @param {*} contentType mimetype to use for download
+ */
+const downloadToFile = (content, filename, contentType) => {
+    const a = document.createElement('a');
+    const file = new Blob([content], { type: contentType });
+
+    a.href = URL.createObjectURL(file);
+    a.download = filename;
+    a.click();
+
+    URL.revokeObjectURL(a.href);
+}
+
+
 /**
  * Parses the string by first breaking it down into a list of
  * strings (separated by newline), then extracting the x and y
@@ -56,4 +75,9 @@ function simplifyCoords(coords) {
 }
 
 
-export { readFileAsync, tracklinesToCoords, simplifyCoords }
+export {
+    readFileAsync,
+    tracklinesToCoords,
+    simplifyCoords,
+    downloadToFile
+}
