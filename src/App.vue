@@ -85,6 +85,9 @@ const downloadZdf = () => {
           <p>
             Open a tracklines file. This will display the tracklines as a readonly map layer to support creating tide zones and stations.
           </p>
+          <p>
+            An example tracklines file can be found <a target="_blank" href="https://raw.githubusercontent.com/ausseabed/tide-tool-ui/main/docs/example_zdf.zdf">here</a>.
+          </p>
           <a-upload
             v-model:file-list="fileList"
             name="file"
