@@ -51,6 +51,8 @@ const downloadZdf = () => {
   let tideStations = tideMap.value?.getTideStations()
   zdf.setStationsWithGeojson(tideStations)
 
+  zdf.buildTideZones()
+
   let al = zdf.allLines()
   console.log(al)
 };

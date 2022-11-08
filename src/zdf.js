@@ -2,6 +2,10 @@
 Representation of the zone definition file in object form
 */
 
+import { point, polygon } from '@turf/helpers';
+import booleanPointInPolygon from '@turf/boolean-point-in-polygon';
+
+
 class ZdfBlock {
 
   constructor(type) {
@@ -141,12 +145,61 @@ class ZdfBlockStation extends ZdfBlock {
 
 
 
+/**
+ * Stores the details of the individual tide stations listed in a TIDE_ZONE
+ * block
+ * eg;
+ * box01,tide01,PRIM,600,1.0,1.08,0.01
+ */
+class TideZoneDetails {
+  constructor(zone, stationDetails) {
+    this.zone = zone
+    this.stationDetails = stationDetails
+
+    // some unknown params that end up in the TIDE_ZONE block
+    this.p1 = 'PRIM'
+    this.p2 = 600
+    this.p3 = 1.0
+    this.p4 = 1.08
+    this.p5 = 0.01
+  }
+
+  toString() {
+    return `${this.zone.name},${this.stationDetails.name},${this.p1},${this.p2},${this.p3},${this.p4},${this.p5}`
+  }
+}
+
+
+class ZdfBlockTideZone extends ZdfBlock {
+
+  constructor() {
+    super('TIDE_ZONE')
+    this.tideZoneDetails = []
+  }
+
+  addTideZoneDetails(tzd) {
+    this.tideZoneDetails.push(tzd)
+  }
+
+  toStrings() {
+    let tideZonesStr = this.tideZoneDetails.map((tzd) => {
+      return tzd.toString()
+    })
+    return [
+      `[${this.type}]`,
+      ...tideZonesStr
+    ]
+  }
+
+}
+
 
 
 class Zdf {
   constructor() {
     this.headers = []
     this.zones = []
+    this.tideZones = []
     this.stations = []
     this.footers = []
     
@@ -163,17 +216,40 @@ class Zdf {
     }
   }
 
-
   setStationsWithGeojson(geojsonStations) {
     let station = ZdfBlockStation.fromGeojson(geojsonStations)
     this.stations.push(station)
   }
 
+  /**
+   * Builds the TIDE_ZONES block based on the ZONES and TIDE_STATIONS
+   * that have already been added to this zdf. Is does this by checking
+   * which tide stations fall within which tide zones.
+   */
+  buildTideZones() {
+    let tideZone = new ZdfBlockTideZone()
+
+    for (const zone of this.zones) {
+      let zonePolygon = polygon([zone.coords])
+      for (const station of this.stations) {
+        for (const stationDetails of station.stationDetails) {
+          let stationPoint = point([stationDetails.longitude, stationDetails.latitude])
+          if (booleanPointInPolygon(stationPoint, zonePolygon)) {
+            let tideZoneDetails = new TideZoneDetails(zone, stationDetails)
+            tideZone.addTideZoneDetails(tideZoneDetails)
+          }
+        }
+      }
+    }
+
+    this.tideZones.push(tideZone)
+  }
 
   allBlocks() {
     let ab = [
       ...this.headers,
       ...this.zones,
+      ...this.tideZones,
       ...this.stations,
       ...this.footers
     ]
