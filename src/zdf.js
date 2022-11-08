@@ -63,7 +63,7 @@ class ZdfBlockZone extends ZdfBlock {
 
   toStrings() {
     let coordsStr = this.coords.map((coord) => {
-      return `${coord[0]}, ${coord[1]}`
+      return `${coord[1]}, ${coord[0]}`
     })
     return [
       `[${this.type}]`,
