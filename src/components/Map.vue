@@ -79,7 +79,8 @@ onMounted(() => {
   map.value.pm.enableDraw('Marker', {
     markerStyle: {
       icon: DefaultIcon
-    }
+    },
+    snappable: false
   });
   map.value.pm.disableDraw()
 })
