@@ -158,9 +158,9 @@ class TideZoneDetails {
 
     // some unknown params that end up in the TIDE_ZONE block
     this.p1 = 'PRIM'
-    this.p2 = 600
+    this.p2 = 0
     this.p3 = 1.0
-    this.p4 = 1.08
+    this.p4 = 0
     this.p5 = 0.01
   }
 
